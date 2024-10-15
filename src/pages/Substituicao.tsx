@@ -37,6 +37,10 @@ export function Substituicao() {
           char = String.fromCharCode(((idChar - 97 + 3) % 26) + 97);
         }
       }
+      // Caso for número
+      if (char.match(/[0-9]/i)) {
+        char = `${Number(char) + 3}`;
+      }
 
       encryptText += char;
     }
@@ -61,6 +65,10 @@ export function Substituicao() {
           // Feito cálculos para a partir do x não usar caracteres que não são letras
           char = String.fromCharCode(((idChar - 97 - 3) % 26) + 97);
         }
+      }
+      // Caso for número
+      if (char.match(/[0-9]/i)) {
+        char = `${Number(char) - 3}`;
       }
 
       decryptText += char;

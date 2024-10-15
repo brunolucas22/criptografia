@@ -37,8 +37,8 @@ export function Transposicao() {
   };
 
   const encrypt = (data: FieldValues) => {
-    const text = data.palavraoriginal.replace(/\s/g, "");
-    const key = data.chaveoriginal.replace(/\s/g, "");
+    const text = data.palavraoriginal;
+    const key = data.chaveoriginal;
     var objectAux: any = {};
     let encryptText = "";
     for (let i = 0; i < text.length; i++) {
@@ -58,34 +58,48 @@ export function Transposicao() {
   };
 
   const decrypt = (data: FieldValues) => {
-    const text: string = data.palavracriptografada.replace(/\s/g, "");
-    const key: string = data.chave.replace(/\s/g, "");
-    const lengthRows = Number(((text.length / key.length) as number).toFixed());
-    const rest = text.length % key.length;
+    var text: string = data.palavracriptografada;
+    const key = data.chave;
+    const keySort: string = key.split("").sort().join("");
+
     var objectAux: any = {};
     let decryptText = "";
 
-    // for (let i = 0; i < text.length; i + lengthRows) {
-    //   const char = text[i];
-    //   const charKey = key[i % key.length];
+    var textLength: number = text.length;
+    // Verifica a quantidade de caracteres em cada lista
+    while (textLength > 0) {
+      for (let k of key) {
+        if (textLength - 1 >= 0) {
+          objectAux = {
+            ...objectAux,
+            [k]: { length: (objectAux[k]?.length || 0) + 1, list: [] },
+          };
+        } else {
+          break;
+        }
 
-    //   objectAux = {
-    //     ...objectAux,
-    //     [charKey]: [...(objectAux[charKey] || []), char],
-    //   };
-    // }
-    console.log("uais", text.length / key.length);
-    for (let i = 0; i < text.length; i = i + lengthRows) {
-      const charKey = key[i % key.length];
+        textLength -= 1;
+      }
+    }
+    for (let i = 0; i < keySort.length; i++) {
+      const charKey = keySort[i];
       objectAux = {
         ...objectAux,
-        [charKey]: [...text.slice(i, i + lengthRows)],
+        [charKey]: [...text.substring(0, objectAux[charKey]?.length)],
       };
+
+      text = text.substring(objectAux[charKey]?.length);
     }
-    console.log(objectAux);
-    for (let k in objectAux) {
-      console.log(k);
-      decryptText += objectAux[k].join("");
+
+    for (let i = 0; i < objectAux[key[0]].length; i++) {
+      for (let k of key) {
+        const char = objectAux[k][i];
+        if (char) {
+          decryptText += char;
+        } else {
+          break;
+        }
+      }
     }
 
     setValueDes("palavra", decryptText);
@@ -170,7 +184,7 @@ export function Transposicao() {
               className="w-full"
               id={`chave`}
               placeholder={"Digite a Chave"}
-              {...registerDes("chave", { required: true })}
+              {...registerDes("chave", { required: true, validate: validate })}
             />
             {getFormErrorMessage(errorsDes.chave)}
           </div>
