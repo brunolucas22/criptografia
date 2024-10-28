@@ -23,7 +23,7 @@ export function ChaveUnica() {
   };
 
   // XOR entre dois binários de 8 bits
-  const xorBinary = (bin1: any, bin2: any) => {
+  const xorBin = (bin1: any, bin2: any) => {
     let result = "";
     for (let i = 0; i < bin1.length; i++) {
       // Aplica XOR bit a bit
@@ -50,7 +50,7 @@ export function ChaveUnica() {
       const keyBin = charToBin(key[i % key.length]);
 
       // Aplica XOR bit a bit
-      const encryptedCharBin = xorBinary(textBin, keyBin);
+      const encryptedCharBin = xorBin(textBin, keyBin);
       console.log(
         { bit: textBin, caractere: text[i] },
         { bitChave: keyBin, caractereChave: key[i % key.length] },
@@ -75,7 +75,7 @@ export function ChaveUnica() {
       const keyBin = charToBin(key[i % key.length]);
 
       // Aplica XOR bit a bit
-      const decryptedCharBin = xorBinary(encryptedBin, keyBin);
+      const decryptedCharBin = xorBin(encryptedBin, keyBin);
 
       // Converte o binário de volta para o caractere
       decryptedText += binToChar(decryptedCharBin);
